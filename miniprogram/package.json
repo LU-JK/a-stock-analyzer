@@ -1,0 +1,8 @@
+{
+  "name": "a-share-analyzer",
+  "version": "1.0.0",
+  "description": "A股股票分析微信小程序",
+  "dependencies": {
+    "@antv/wx-f2": "^2.0.0"
+  }
+}

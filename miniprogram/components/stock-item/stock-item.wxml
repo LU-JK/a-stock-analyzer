@@ -1,0 +1,12 @@
+<view class="stock-item">
+  <view class="si-left">
+    <text class="si-name">{{name}}</text>
+    <text class="si-code">{{code}}</text>
+  </view>
+  <view class="si-right">
+    <text class="si-price">{{price}}</text>
+    <text class="si-pct {{changePct > 0 ? 'up' : changePct < 0 ? 'down' : ''}}">
+      {{changePct > 0 ? '+' : ''}}{{changePct}}%
+    </text>
+  </view>
+</view>

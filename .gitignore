@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.pyo
+.env
+ngrok.exe
+bore.exe
+*.zip
+node_modules/
+miniprogram/node_modules/
+miniprogram/miniprogram_npm/

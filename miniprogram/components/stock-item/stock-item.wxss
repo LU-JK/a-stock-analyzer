@@ -1,0 +1,14 @@
+.stock-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #2a2a40;
+}
+.stock-item:last-child { border-bottom: none; }
+.si-left { display: flex; flex-direction: column; }
+.si-name { font-size: 30rpx; color: #fff; font-weight: 500; }
+.si-code { font-size: 22rpx; color: #888; margin-top: 4rpx; }
+.si-right { display: flex; flex-direction: column; align-items: flex-end; }
+.si-price { font-size: 32rpx; color: #fff; font-weight: bold; }
+.si-pct { font-size: 24rpx; margin-top: 4rpx; font-weight: bold; }

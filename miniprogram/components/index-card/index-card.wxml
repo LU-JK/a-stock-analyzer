@@ -1,0 +1,9 @@
+<view class="index-card {{changePct > 0 ? 'card-up' : changePct < 0 ? 'card-down' : ''}}">
+  <text class="idx-name">{{name}}</text>
+  <text class="idx-price">{{price}}</text>
+  <view class="idx-change-row">
+    <text class="idx-change {{changePct > 0 ? 'up' : changePct < 0 ? 'down' : ''}}">
+      {{changePct > 0 ? '+' : ''}}{{changePct}}%
+    </text>
+  </view>
+</view>

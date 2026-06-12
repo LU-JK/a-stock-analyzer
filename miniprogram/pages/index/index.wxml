@@ -1,0 +1,92 @@
+<!-- 首页 — 行情概览 -->
+<view class="container">
+
+  <!-- 搜索栏 -->
+  <view class="search-bar" bindtap="onTapSearch">
+    <image class="search-icon" src="/images/search.png" mode="aspectFit" />
+    <text class="search-placeholder">搜索股票名称或代码...</text>
+  </view>
+
+  <!-- 加载态 -->
+  <view class="loading-center" wx:if="{{loading}}">
+    <text class="loading-text">加载市场数据...</text>
+  </view>
+
+  <!-- 错误态 -->
+  <view class="error-text" wx:elif="{{error}}">
+    <text>{{error}}</text>
+    <button class="retry-btn" bindtap="fetchMarketData">重试</button>
+  </view>
+
+  <block wx:else>
+    <!-- 交易状态 -->
+    <view class="market-status {{meta.market_open ? 'open' : 'closed'}}">
+      <text>{{meta.market_open ? '● 交易中' : '○ 已收盘'}}</text>
+      <text class="update-time">{{meta.timestamp}}</text>
+    </view>
+
+    <!-- 4大指数 -->
+    <scroll-view class="index-scroll" scroll-x enhanced show-scrollbar="{{false}}">
+      <view class="index-row">
+        <index-card
+          wx:for="{{indices}}"
+          wx:key="code"
+          name="{{item.name}}"
+          price="{{item.price}}"
+          change="{{item.change}}"
+          changePct="{{item.change_pct}}"
+        />
+      </view>
+    </scroll-view>
+
+    <!-- 市场情绪 -->
+    <view class="card signal-card">
+      <view class="card-title">市场情绪</view>
+      <view class="signal-row">
+        <view class="signal-item">
+          <text class="signal-label">涨跌比</text>
+          <text class="signal-value">{{signals.breadth}}%</text>
+        </view>
+        <view class="signal-item">
+          <text class="signal-label">风险等级</text>
+          <text class="signal-value {{signals.risk_level === 'high' ? 'up' : 'down'}}">
+            {{signals.risk_level === 'normal' ? '正常' : signals.risk_level === 'high' ? '偏高' : '较低'}}
+          </text>
+        </view>
+        <view class="signal-item">
+          <text class="signal-label">领涨板块</text>
+          <text class="signal-value">{{signals.top_sector || '--'}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 热门板块 -->
+    <view class="card">
+      <view class="card-title">热门板块</view>
+      <view class="sector-list">
+        <view class="sector-item" wx:for="{{topSectors}}" wx:key="code">
+          <text class="sector-name">{{item.name}}</text>
+          <text class="sector-pct {{item.change_pct > 0 ? 'up' : 'down'}}">
+            {{item.change_pct > 0 ? '+' : ''}}{{item.change_pct}}%
+          </text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 涨幅榜 -->
+    <view class="card">
+      <view class="card-title">今日涨幅榜</view>
+      <stock-item
+        wx:for="{{topGainers}}"
+        wx:key="code"
+        code="{{item.code}}"
+        name="{{item.name}}"
+        price="{{item.price}}"
+        changePct="{{item.change_pct}}"
+        bindtap="onTapStock"
+        data-code="{{item.code}}"
+      />
+    </view>
+  </block>
+
+</view>

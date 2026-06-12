@@ -1,0 +1,60 @@
+.container { padding: 16rpx; }
+
+/* 搜索栏 */
+.search-bar {
+  display: flex;
+  align-items: center;
+  background: #1a1a2e;
+  border-radius: 40rpx;
+  padding: 16rpx 28rpx;
+  margin-bottom: 20rpx;
+}
+.search-icon { width: 32rpx; height: 32rpx; opacity: 0.5; }
+.search-placeholder { color: #666; margin-left: 16rpx; font-size: 28rpx; }
+
+/* 交易状态 */
+.market-status {
+  display: flex;
+  justify-content: space-between;
+  padding: 10rpx 8rpx;
+  font-size: 24rpx;
+  color: #888;
+}
+.market-status.open { color: #e63946; }
+.market-status.closed { color: #666; }
+.update-time { opacity: 0.6; }
+
+/* 指数横向滚动 */
+.index-scroll { white-space: nowrap; margin-bottom: 16rpx; }
+.index-row { display: inline-flex; gap: 16rpx; }
+
+/* 信号卡片 */
+.signal-card { }
+.signal-row { display: flex; justify-content: space-between; margin-top: 16rpx; }
+.signal-item { display: flex; flex-direction: column; align-items: center; flex: 1; }
+.signal-label { font-size: 22rpx; color: #888; margin-bottom: 8rpx; }
+.signal-value { font-size: 30rpx; font-weight: bold; }
+
+/* 板块列表 */
+.sector-list { margin-top: 12rpx; }
+.sector-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 14rpx 0;
+  border-bottom: 1rpx solid #2a2a40;
+}
+.sector-item:last-child { border-bottom: none; }
+.sector-name { font-size: 28rpx; }
+.sector-pct { font-size: 28rpx; font-weight: bold; }
+
+/* 通用 */
+.card-title { font-size: 30rpx; font-weight: bold; color: #fff; margin-bottom: 8rpx; }
+.loading-text { color: #888; font-size: 28rpx; }
+.retry-btn {
+  margin-top: 20rpx;
+  background: #1a1a2e;
+  color: #e0e0e0;
+  border-radius: 8rpx;
+  padding: 12rpx 40rpx;
+  font-size: 26rpx;
+}

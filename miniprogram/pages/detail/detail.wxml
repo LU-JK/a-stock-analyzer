@@ -1,0 +1,297 @@
+<!-- 股票详情页 -->
+<view class="container">
+
+  <!-- 加载态 -->
+  <view class="loading-center" wx:if="{{loading}}">
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 错误态 -->
+  <view class="error-text" wx:elif="{{error && !quote}}">
+    <text>{{error}}</text>
+  </view>
+
+  <block wx:elif="{{quote}}">
+    <!-- ═══ 股票头部 ═══ -->
+    <view class="stock-header">
+      <view class="header-top">
+        <text class="stock-name">{{quote.name}}</text>
+        <text class="stock-code">{{quote.code}}</text>
+      </view>
+      <view class="header-price-row">
+        <text class="price {{quote.change_pct > 0 ? 'up' : quote.change_pct < 0 ? 'down' : ''}}">
+          {{quote.price}}
+        </text>
+        <view class="change-group">
+          <text class="change {{quote.change_pct > 0 ? 'up' : 'down'}}">{{quote.change_pct > 0 ? '+' : ''}}{{quote.change_pct}}%</text>
+          <text class="change-amount {{quote.change > 0 ? 'up' : 'down'}}">{{quote.change > 0 ? '+' : ''}}{{quote.change}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- ═══ Tab 栏 ═══ -->
+    <scroll-view class="tab-bar" scroll-x>
+      <view
+        class="tab-item {{activeTab === index ? 'active' : ''}}"
+        wx:for="{{tabs}}"
+        wx:key="*this"
+        data-index="{{index}}"
+        bindtap="onTabChange"
+      >
+        {{item}}
+      </view>
+    </scroll-view>
+
+    <!-- ══════ Tab 0: 概览 ══════ -->
+    <view class="tab-content" wx:if="{{activeTab === 0}}">
+      <!-- 行情数据网格 -->
+      <view class="card quote-grid">
+        <view class="grid-item">
+          <text class="grid-label">今开</text>
+          <text class="grid-value">{{quote.open || '--'}}</text>
+        </view>
+        <view class="grid-item">
+          <text class="grid-label">昨收</text>
+          <text class="grid-value">{{quote.prev_close || '--'}}</text>
+        </view>
+        <view class="grid-item">
+          <text class="grid-label">最高</text>
+          <text class="grid-value up">{{quote.high || '--'}}</text>
+        </view>
+        <view class="grid-item">
+          <text class="grid-label">最低</text>
+          <text class="grid-value down">{{quote.low || '--'}}</text>
+        </view>
+        <view class="grid-item">
+          <text class="grid-label">成交量</text>
+          <text class="grid-value">{{quote.volume ? quote.volume/10000 + '万手' : '--'}}</text>
+        </view>
+        <view class="grid-item">
+          <text class="grid-label">成交额</text>
+          <text class="grid-value">{{quote.turnover ? (quote.turnover/1e8).toFixed(2) + '亿' : '--'}}</text>
+        </view>
+        <view class="grid-item">
+          <text class="grid-label">换手率</text>
+          <text class="grid-value">{{quote.turnover_rate ? quote.turnover_rate.toFixed(2) + '%' : '--'}}</text>
+        </view>
+        <view class="grid-item">
+          <text class="grid-label">振幅</text>
+          <text class="grid-value">{{quote.amplitude ? quote.amplitude.toFixed(2) + '%' : '--'}}</text>
+        </view>
+        <view class="grid-item">
+          <text class="grid-label">市盈率</text>
+          <text class="grid-value">{{quote.pe_dynamic ? quote.pe_dynamic.toFixed(2) : '--'}}</text>
+        </view>
+        <view class="grid-item">
+          <text class="grid-label">市净率</text>
+          <text class="grid-value">{{quote.pb ? quote.pb.toFixed(2) : '--'}}</text>
+        </view>
+        <view class="grid-item">
+          <text class="grid-label">总市值</text>
+          <text class="grid-value">{{quote.market_cap ? (quote.market_cap/1e8).toFixed(2) + '亿' : '--'}}</text>
+        </view>
+        <view class="grid-item">
+          <text class="grid-label">流通市值</text>
+          <text class="grid-value">{{quote.float_market_cap ? (quote.float_market_cap/1e8).toFixed(2) + '亿' : '--'}}</text>
+        </view>
+      </view>
+
+      <!-- 迷你K线提示 -->
+      <view class="card" wx:if="{{miniKline.length > 0}}">
+        <view class="card-title">近30日走势</view>
+        <view class="mini-kline-chart">
+          <view
+            class="mini-bar {{item.close >= item.open ? 'up-bg' : 'down-bg'}}"
+            wx:for="{{miniKline}}"
+            wx:key="date"
+            style="height: {{(item.close - 0) / 50 * 100}}rpx; flex: 1; margin: 0 1rpx; border-radius: 2rpx;"
+          ></view>
+        </view>
+      </view>
+    </view>
+
+    <!-- ══════ Tab 1: 技术 ══════ -->
+    <view class="tab-content" wx:if="{{activeTab === 1}}">
+      <view class="loading-center" wx:if="{{techLoading}}">
+        <text class="loading-text">计算技术指标...</text>
+      </view>
+
+      <block wx:elif="{{technical}}">
+        <!-- 信号卡片 -->
+        <view class="card">
+          <view class="card-title">技术信号</view>
+          <view class="signal-cards">
+            <view class="signal-card {{item.includes('多头') || item.includes('偏强') ? 'bullish' : item.includes('空头') || item.includes('偏弱') ? 'bearish' : 'neutral'}}"
+              wx:for="{{technical.signals}}"
+              wx:for-item="signal"
+              wx:for-index="key"
+              wx:key="key"
+            >
+              <text class="signal-key">{{key}}</text>
+              <text class="signal-val">{{signal}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 指标数值 -->
+        <view class="card">
+          <view class="card-title">指标数值</view>
+          <view class="tech-grid">
+            <view class="tech-row">
+              <text class="tech-label">MA5</text>
+              <text class="tech-value">{{technical.latest_values.MA5 ? technical.latest_values.MA5.toFixed(2) : '--'}}</text>
+              <text class="tech-label">MA10</text>
+              <text class="tech-value">{{technical.latest_values.MA10 ? technical.latest_values.MA10.toFixed(2) : '--'}}</text>
+            </view>
+            <view class="tech-row">
+              <text class="tech-label">MA20</text>
+              <text class="tech-value">{{technical.latest_values.MA20 ? technical.latest_values.MA20.toFixed(2) : '--'}}</text>
+              <text class="tech-label">MA60</text>
+              <text class="tech-value">{{technical.latest_values.MA60 ? technical.latest_values.MA60.toFixed(2) : '--'}}</text>
+            </view>
+            <view class="tech-row">
+              <text class="tech-label">DIF</text>
+              <text class="tech-value">{{technical.latest_values.DIF ? technical.latest_values.DIF.toFixed(4) : '--'}}</text>
+              <text class="tech-label">DEA</text>
+              <text class="tech-value">{{technical.latest_values.DEA ? technical.latest_values.DEA.toFixed(4) : '--'}}</text>
+            </view>
+            <view class="tech-row">
+              <text class="tech-label">MACD</text>
+              <text class="tech-value">{{technical.latest_values.MACD_hist ? technical.latest_values.MACD_hist.toFixed(4) : '--'}}</text>
+              <text class="tech-label">RSI(6)</text>
+              <text class="tech-value">{{technical.latest_values.RSI6 ? technical.latest_values.RSI6.toFixed(1) : '--'}}</text>
+            </view>
+            <view class="tech-row">
+              <text class="tech-label">K</text>
+              <text class="tech-value">{{technical.latest_values.K ? technical.latest_values.K.toFixed(2) : '--'}}</text>
+              <text class="tech-label">D</text>
+              <text class="tech-value">{{technical.latest_values.D ? technical.latest_values.D.toFixed(2) : '--'}}</text>
+            </view>
+            <view class="tech-row">
+              <text class="tech-label">J</text>
+              <text class="tech-value">{{technical.latest_values.J ? technical.latest_values.J.toFixed(2) : '--'}}</text>
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <!-- ══════ Tab 2: 财务 ══════ -->
+    <view class="tab-content" wx:if="{{activeTab === 2}}">
+      <view class="loading-center" wx:if="{{finLoading}}">
+        <text class="loading-text">加载财务数据...</text>
+      </view>
+
+      <block wx:elif="{{financial}}">
+        <!-- 最近一期财务 -->
+        <view class="card" wx:if="{{financial.latest}}">
+          <view class="card-title">最新财务 ({{financial.latest.date}})</view>
+          <view class="fin-grid">
+            <view class="fin-item">
+              <text class="fin-label">每股收益</text>
+              <text class="fin-value">{{financial.latest.eps ? '¥' + financial.latest.eps.toFixed(4) : '--'}}</text>
+            </view>
+            <view class="fin-item">
+              <text class="fin-label">营收增速</text>
+              <text class="fin-value {{financial.latest.revenue_growth > 0 ? 'up' : 'down'}}">
+                {{financial.latest.revenue_growth ? financial.latest.revenue_growth.toFixed(1) + '%' : '--'}}
+              </text>
+            </view>
+            <view class="fin-item">
+              <text class="fin-label">利润增速</text>
+              <text class="fin-value {{financial.latest.profit_growth > 0 ? 'up' : 'down'}}">
+                {{financial.latest.profit_growth ? financial.latest.profit_growth.toFixed(1) + '%' : '--'}}
+              </text>
+            </view>
+            <view class="fin-item">
+              <text class="fin-label">ROE</text>
+              <text class="fin-value">{{financial.latest.roe ? financial.latest.roe.toFixed(2) + '%' : '--'}}</text>
+            </view>
+            <view class="fin-item">
+              <text class="fin-label">毛利率</text>
+              <text class="fin-value">{{financial.latest.gross_margin ? financial.latest.gross_margin.toFixed(2) + '%' : '--'}}</text>
+            </view>
+            <view class="fin-item">
+              <text class="fin-label">净利率</text>
+              <text class="fin-value">{{financial.latest.net_margin ? financial.latest.net_margin.toFixed(2) + '%' : '--'}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 历史财务 -->
+        <view class="card" wx:if="{{financial.history.length > 1}}">
+          <view class="card-title">历史趋势</view>
+          <scroll-view scroll-x class="fin-scroll">
+            <view class="fin-table">
+              <view class="fin-table-row fin-table-header">
+                <text class="fin-col-date">报告期</text>
+                <text class="fin-col">EPS</text>
+                <text class="fin-col">营收增速</text>
+                <text class="fin-col">利润增速</text>
+                <text class="fin-col">ROE</text>
+              </view>
+              <view class="fin-table-row" wx:for="{{financial.history}}" wx:key="date">
+                <text class="fin-col-date">{{item.date.slice(0,10)}}</text>
+                <text class="fin-col">{{item.eps ? item.eps.toFixed(2) : '--'}}</text>
+                <text class="fin-col {{item.revenue_growth > 0 ? 'up' : 'down'}}">{{item.revenue_growth ? item.revenue_growth.toFixed(1) + '%' : '--'}}</text>
+                <text class="fin-col {{item.profit_growth > 0 ? 'up' : 'down'}}">{{item.profit_growth ? item.profit_growth.toFixed(1) + '%' : '--'}}</text>
+                <text class="fin-col">{{item.roe ? item.roe.toFixed(1) + '%' : '--'}}</text>
+              </view>
+            </view>
+          </scroll-view>
+        </view>
+
+        <!-- 资金流向 -->
+        <view class="card" wx:if="{{fundFlow.length > 0}}">
+          <view class="card-title">资金流向 (近10日)</view>
+          <view class="flow-list">
+            <view class="flow-item" wx:for="{{fundFlow}}" wx:key="date">
+              <text class="flow-date">{{item.date.slice(5, 10)}}</text>
+              <text class="flow-val {{item.main_net_inflow > 0 ? 'up' : 'down'}}">
+                {{item.main_net_inflow ? (item.main_net_inflow/1e4).toFixed(0) + '万' : '--'}}
+              </text>
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <!-- ══════ Tab 3: 分析 ══════ -->
+    <view class="tab-content" wx:if="{{activeTab === 3}}">
+      <view class="loading-center" wx:if="{{analysisLoading}}">
+        <text class="loading-text">综合分析中...</text>
+        <text class="loading-sub">正在获取估值、财务、技术数据...</text>
+      </view>
+
+      <block wx:elif="{{analysis}}">
+        <!-- 总分环 -->
+        <view class="card score-section">
+          <score-ring score="{{analysis.total_score}}" />
+          <text class="recommendation">{{analysis.recommendation}}</text>
+        </view>
+
+        <!-- 4维评分 -->
+        <view class="card">
+          <view class="card-title">分项评分</view>
+          <view class="dim-list">
+            <view class="dim-item" wx:for="{{analysis.dimensions}}" wx:for-index="dim" wx:for-item="detail" wx:key="dim">
+              <view class="dim-header">
+                <text class="dim-name">{{dim === 'valuation' ? '估值' : dim === 'growth' ? '成长' : dim === 'fund_flow' ? '资金' : '技术'}}</text>
+                <text class="dim-score {{detail.score >= 70 ? 'up' : detail.score >= 40 ? '' : 'down'}}">{{detail.score}}</text>
+              </view>
+              <view class="dim-bar">
+                <view class="dim-bar-fill {{detail.score >= 70 ? 'bar-up' : detail.score >= 40 ? 'bar-mid' : 'bar-down'}}"
+                  style="width: {{detail.score}}%"
+                />
+              </view>
+              <view class="dim-signals">
+                <text class="dim-signal" wx:for="{{detail.signals}}" wx:key="*this" wx:for-item="s">{{s}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+  </block>
+
+</view>

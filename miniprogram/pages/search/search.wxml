@@ -1,0 +1,57 @@
+<!-- 搜索页 -->
+<view class="container">
+
+  <!-- 搜索框 -->
+  <view class="search-box">
+    <image class="search-icon" src="/images/search.png" mode="aspectFit" />
+    <input
+      class="search-input"
+      placeholder="输入股票名称或代码..."
+      value="{{keyword}}"
+      bindinput="onInput"
+      focus
+      confirm-type="search"
+    />
+    <view class="clear-btn" wx:if="{{keyword}}" bindtap="onClear">
+      <text>✕</text>
+    </view>
+  </view>
+
+  <!-- 搜索中 -->
+  <view class="loading-center" wx:if="{{searching}}">
+    <text class="loading-text">搜索中...</text>
+  </view>
+
+  <!-- 无结果 -->
+  <view class="empty-hint" wx:elif="{{searched && results.length === 0 && !error}}">
+    <text>未找到匹配的股票</text>
+  </view>
+
+  <!-- 错误 -->
+  <view class="error-text" wx:elif="{{error}}">
+    <text>{{error}}</text>
+  </view>
+
+  <!-- 结果列表 -->
+  <view class="result-list" wx:elif="{{results.length > 0}}">
+    <view class="result-header">
+      <text>找到 {{results.length}} 只股票</text>
+    </view>
+    <stock-item
+      wx:for="{{results}}"
+      wx:key="code"
+      code="{{item.code}}"
+      name="{{item.name}}"
+      price="{{item.price}}"
+      changePct="{{item.change_pct}}"
+      bindtap="onTapStock"
+      data-code="{{item.code}}"
+    />
+  </view>
+
+  <!-- 初始提示 -->
+  <view class="empty-hint" wx:else>
+    <text>🔍 输入股票名称或代码开始搜索</text>
+  </view>
+
+</view>

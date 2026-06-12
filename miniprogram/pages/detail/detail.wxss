@@ -1,0 +1,157 @@
+.container { padding-bottom: 40rpx; }
+
+/* ═══ 头部 ═══ */
+.stock-header {
+  background: linear-gradient(135deg, #1a1a2e 0%, #162240 100%);
+  padding: 32rpx 28rpx;
+  border-radius: 0 0 20rpx 20rpx;
+}
+.header-top { display: flex; align-items: center; gap: 16rpx; margin-bottom: 16rpx; }
+.stock-name { font-size: 36rpx; font-weight: bold; color: #fff; }
+.stock-code { font-size: 24rpx; color: #888; }
+.header-price-row { display: flex; align-items: baseline; justify-content: space-between; }
+.price { font-size: 56rpx; font-weight: bold; color: #fff; }
+.change-group { display: flex; flex-direction: column; align-items: flex-end; }
+.change { font-size: 34rpx; font-weight: bold; }
+.change-amount { font-size: 26rpx; margin-top: 4rpx; }
+
+/* ═══ Tab ═══ */
+.tab-bar {
+  display: flex;
+  white-space: nowrap;
+  padding: 16rpx 0;
+  margin: 16rpx;
+}
+.tab-item {
+  display: inline-block;
+  padding: 12rpx 36rpx;
+  font-size: 28rpx;
+  color: #888;
+  border-radius: 24rpx;
+  margin-right: 12rpx;
+  background: #1a1a2e;
+  transition: all 0.2s;
+}
+.tab-item.active { background: #e63946; color: #fff; }
+
+/* ═══ 概览 — 行情网格 ═══ */
+.quote-grid { display: flex; flex-wrap: wrap; }
+.grid-item {
+  width: 33.33%;
+  padding: 16rpx 8rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-bottom: 1rpx solid #2a2a40;
+}
+.grid-label { font-size: 22rpx; color: #888; margin-bottom: 6rpx; }
+.grid-value { font-size: 28rpx; color: #fff; font-weight: 500; }
+
+/* 迷你K线 */
+.mini-kline-chart {
+  display: flex;
+  align-items: flex-end;
+  height: 160rpx;
+  padding: 20rpx 0;
+}
+.up-bg { background: #e63946; }
+.down-bg { background: #2ecc71; }
+
+/* ═══ 技术 — 信号 ═══ */
+.signal-cards { display: flex; flex-wrap: wrap; gap: 12rpx; margin-top: 12rpx; }
+.signal-card-bullish, .signal-card-bearish, .signal-card-neutral,
+.signal-card {
+  padding: 12rpx 20rpx;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+}
+.signal-card.bullish { background: rgba(230,57,70,0.12); border: 1rpx solid rgba(230,57,70,0.3); }
+.signal-card.bearish { background: rgba(46,204,113,0.12); border: 1rpx solid rgba(46,204,113,0.3); }
+.signal-card.neutral { background: rgba(160,160,180,0.08); border: 1rpx solid rgba(160,160,180,0.15); }
+.signal-key { color: #888; display: block; font-size: 20rpx; margin-bottom: 4rpx; }
+.signal-val { color: #fff; font-weight: 500; }
+
+/* 技术指标表格 */
+.tech-grid { margin-top: 12rpx; }
+.tech-row {
+  display: flex;
+  padding: 10rpx 0;
+  border-bottom: 1rpx solid #2a2a40;
+}
+.tech-label { flex: 1; color: #888; font-size: 26rpx; }
+.tech-value { flex: 2; color: #fff; font-size: 26rpx; text-align: right; }
+
+/* ═══ 财务 ═══ */
+.fin-grid { display: flex; flex-wrap: wrap; margin-top: 12rpx; }
+.fin-item {
+  width: 50%;
+  padding: 14rpx 0;
+  border-bottom: 1rpx solid #2a2a40;
+}
+.fin-label { font-size: 22rpx; color: #888; display: block; margin-bottom: 4rpx; }
+.fin-value { font-size: 28rpx; color: #fff; font-weight: 500; }
+
+/* 财务滚动表 */
+.fin-scroll { white-space: nowrap; }
+.fin-table { display: inline-block; min-width: 100%; }
+.fin-table-row { display: flex; padding: 12rpx 0; border-bottom: 1rpx solid #2a2a40; }
+.fin-table-header { }
+.fin-table-header text { color: #888; font-weight: bold; }
+.fin-col-date { flex: 2; font-size: 22rpx; color: #888; }
+.fin-col { flex: 1.5; font-size: 22rpx; text-align: center; }
+
+/* 资金流向 */
+.flow-list { display: flex; overflow-x: auto; gap: 12rpx; margin-top: 12rpx; }
+.flow-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12rpx 20rpx;
+  background: rgba(26,26,46,0.5);
+  border-radius: 8rpx;
+  min-width: 100rpx;
+}
+.flow-date { font-size: 20rpx; color: #888; margin-bottom: 6rpx; }
+.flow-val { font-size: 24rpx; font-weight: bold; }
+
+/* ═══ 分析 ═══ */
+.score-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40rpx 0;
+}
+.recommendation {
+  margin-top: 20rpx;
+  font-size: 28rpx;
+  color: #e0e0e0;
+  text-align: center;
+}
+.dim-list { margin-top: 12rpx; }
+.dim-item { margin-bottom: 24rpx; }
+.dim-header { display: flex; justify-content: space-between; margin-bottom: 8rpx; }
+.dim-name { font-size: 28rpx; color: #e0e0e0; }
+.dim-score { font-size: 32rpx; font-weight: bold; }
+.dim-bar {
+  height: 8rpx;
+  background: #2a2a40;
+  border-radius: 4rpx;
+  overflow: hidden;
+}
+.dim-bar-fill { height: 100%; border-radius: 4rpx; transition: width 0.6s ease; }
+.bar-up { background: #e63946; }
+.bar-mid { background: #f39c12; }
+.bar-down { background: #2ecc71; }
+.dim-signals { margin-top: 10rpx; }
+.dim-signal {
+  display: block;
+  font-size: 22rpx;
+  color: #888;
+  padding: 4rpx 0;
+}
+
+/* 通用 */
+.card-title { font-size: 30rpx; font-weight: bold; color: #fff; margin-bottom: 8rpx; }
+.loading-center { padding: 120rpx 0; text-align: center; }
+.loading-text { color: #888; font-size: 28rpx; }
+.loading-sub { display: block; color: #666; font-size: 24rpx; margin-top: 12rpx; }

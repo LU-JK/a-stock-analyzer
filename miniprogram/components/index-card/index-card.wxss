@@ -1,0 +1,17 @@
+.index-card {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 200rpx;
+  padding: 20rpx 24rpx;
+  background: #1a1a2e;
+  border-radius: 12rpx;
+  border-left: 4rpx solid #888;
+}
+.index-card.card-up { border-left-color: #e63946; }
+.index-card.card-down { border-left-color: #2ecc71; }
+
+.idx-name { font-size: 24rpx; color: #888; margin-bottom: 10rpx; }
+.idx-price { font-size: 36rpx; font-weight: bold; color: #fff; }
+.idx-change-row { margin-top: 6rpx; }
+.idx-change { font-size: 24rpx; font-weight: bold; }

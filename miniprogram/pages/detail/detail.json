@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "股票详情",
+  "usingComponents": {
+    "stock-item": "/components/stock-item/stock-item",
+    "score-ring": "/components/score-ring/score-ring"
+  }
+}

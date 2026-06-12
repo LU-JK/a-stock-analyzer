@@ -1,0 +1,3 @@
+<view class="score-ring-container">
+  <canvas type="2d" id="scoreCanvas" style="width: {{size}}rpx; height: {{size}}rpx;" />
+</view>

@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "搜索股票",
+  "usingComponents": {
+    "stock-item": "/components/stock-item/stock-item"
+  }
+}
