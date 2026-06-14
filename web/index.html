@@ -330,7 +330,7 @@ async function loadMarket() {
     (data.top_gainers || []).slice(0, 8).forEach(g => {
       gHtml += `<div class="stock-item" onclick="showDetail('${g.code}')">
         <div class="stock-left"><span class="stock-name">${g.name}</span><span class="stock-code">${g.code}</span></div>
-        <div class="stock-right"><span class="stock-price">${g.price?.toFixed(2)||'--'}</span><span class="stock-pct up">+${g.change_pct?.toFixed(2)||'0.00'}%</span></div>
+        <div class="stock-right"><span class="stock-price">${g.price?.toFixed(2)||'--'}</span><span class="stock-pct ${g.change_pct>0?'up':'down'}">${(g.change_pct>=0?'+':'')}${g.change_pct?.toFixed(2)||'0.00'}%</span></div>
       </div>`;
     });
     document.getElementById('gainers').innerHTML = gHtml || '<p style="color:var(--muted)">暂无数据</p>';
@@ -368,9 +368,12 @@ async function doSearch(kw) {
     const data = await api('/stocks/search', { keyword: kw, limit: 30 });
     let html = `<p style="color:var(--muted);font-size:12px;margin-bottom:8px">找到 ${data.count} 只股票</p>`;
     (data.results || []).forEach(r => {
+      const p = r.price != null ? r.price.toFixed(2) : '--';
+      const pct = r.change_pct != null ? ((r.change_pct>=0?'+':'') + r.change_pct.toFixed(2) + '%') : '--';
+      const cls = r.change_pct > 0 ? 'up' : r.change_pct < 0 ? 'down' : 'flat';
       html += `<div class="stock-item" onclick="showDetail('${r.code}')">
         <div class="stock-left"><span class="stock-name">${r.name}</span><span class="stock-code">${r.code}</span></div>
-        <div class="stock-right"><span class="stock-price">${r.price?.toFixed(2)||'--'}</span><span class="stock-pct ${r.change_pct>0?'up':'down'}">${(r.change_pct>=0?'+':'')}${r.change_pct?.toFixed(2)||'0.00'}%</span></div>
+        <div class="stock-right"><span class="stock-price">${p}</span><span class="stock-pct ${cls}">${pct}</span></div>
       </div>`;
     });
     document.getElementById('search-results').innerHTML = html;
@@ -410,9 +413,12 @@ function renderQuoteGrid(q) {
     ['今开', q.open], ['昨收', q.prev_close], ['最高', q.high], ['最低', q.low],
     ['成交量', q.volume ? (q.volume/1e4).toFixed(0)+'万手' : '--'],
     ['成交额', q.turnover ? (q.turnover/1e8).toFixed(2)+'亿' : '--'],
-    ['换手率', q.turnover_rate?.toFixed(2)+'%'], ['振幅', q.amplitude?.toFixed(2)+'%'],
-    ['市盈率', q.pe_dynamic?.toFixed(2)], ['市净率', q.pb?.toFixed(2)],
-    ['总市值', (q.market_cap/1e8)?.toFixed(1)+'亿'], ['流通市值', (q.float_market_cap/1e8)?.toFixed(1)+'亿']
+    ['换手率', q.turnover_rate != null ? q.turnover_rate.toFixed(2)+'%' : '--'],
+    ['振幅', q.amplitude != null ? q.amplitude.toFixed(2)+'%' : '--'],
+    ['市盈率', q.pe_dynamic != null ? q.pe_dynamic.toFixed(2) : '--'],
+    ['市净率', q.pb != null ? q.pb.toFixed(2) : '--'],
+    ['总市值', q.market_cap ? (q.market_cap/1e8).toFixed(1)+'亿' : '--'],
+    ['流通市值', q.float_market_cap ? (q.float_market_cap/1e8).toFixed(1)+'亿' : '--']
   ];
   document.getElementById('quote-grid').innerHTML = items.map(([l,v]) =>
     `<div class="grid-item"><div class="grid-label">${l}</div><div class="grid-value">${v||'--'}</div></div>`
@@ -542,9 +548,9 @@ async function loadFinancial() {
       const l = fin.latest;
       html += `<div class="card"><div class="card-title">最新财务 (${l.date?.slice(0,10)})</div>
         <div class="grid2">${[
-          ['每股收益','¥'+(l.eps?.toFixed(4)||'--')], ['营收增速',l.revenue_growth?.toFixed(1)+'%'],
-          ['利润增速',l.profit_growth?.toFixed(1)+'%'], ['ROE',l.roe?.toFixed(2)+'%'],
-          ['毛利率',l.gross_margin?.toFixed(2)+'%'], ['净利率',l.net_margin?.toFixed(2)+'%']
+          ['每股收益','¥'+(l.eps!=null?l.eps.toFixed(4):'--')], ['营收增速',l.revenue_growth!=null?l.revenue_growth.toFixed(1)+'%':'--'],
+          ['利润增速',l.profit_growth!=null?l.profit_growth.toFixed(1)+'%':'--'], ['ROE',l.roe!=null?l.roe.toFixed(2)+'%':'--'],
+          ['毛利率',l.gross_margin!=null?l.gross_margin.toFixed(2)+'%':'--'], ['净利率',l.net_margin!=null?l.net_margin.toFixed(2)+'%':'--']
         ].map(([lb,vl]) => `<div class="grid-item"><div class="grid-label">${lb}</div><div class="grid-value" style="color:${vl.includes('-')?'var(--down)':'inherit'}">${vl}</div></div>`).join('')}</div></div>`;
     }
     if (flow.data && flow.data.length) {
