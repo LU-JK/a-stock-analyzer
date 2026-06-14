@@ -1,24 +1,14 @@
-"""市场数据服务 — 指数、板块、涨幅榜"""
-import warnings
-warnings.filterwarnings('ignore')
+"""市场数据 — a-stock-data 主力 + 备用"""
+import sys, os, asyncio
 
-import sys
-import os
-import asyncio
-
-# 市场数据模块 — 已包含在项目中
-SKILLS_DIR = os.path.join(os.path.dirname(__file__), "..", "skills")
-sys.path.insert(0, SKILLS_DIR)
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'skills'))
 from a_stock_data import fetch_snapshot
 
 
 async def get_market_overview() -> dict:
-    """获取市场全景快照"""
+    """市场全景快照，失败时返回空数据而非报错"""
     try:
-        # fetch_snapshot 是纯 HTTP 请求，同步但很快
-        loop = asyncio.get_event_loop()
-        data = await loop.run_in_executor(None, fetch_snapshot)
-
+        data = await asyncio.get_event_loop().run_in_executor(None, fetch_snapshot)
         return {
             "meta": data.get("meta", {}),
             "indices": data.get("indices", []),
@@ -27,5 +17,13 @@ async def get_market_overview() -> dict:
             "signals": data.get("signals", {}),
             "errors": data.get("errors", []),
         }
-    except Exception as e:
-        raise RuntimeError(f"获取市场数据失败: {e}")
+    except Exception:
+        # 降级：返回空数据
+        return {
+            "meta": {"market_open": False, "timestamp": ""},
+            "indices": [],
+            "top_sectors": [],
+            "top_gainers": [],
+            "signals": {"breadth": 0, "risk_level": "unknown", "top_sector": ""},
+            "errors": ["市场数据接口暂时不可用"],
+        }
